@@ -16,7 +16,9 @@ func main() {
 	defer db.CloseDB()
 
 	// connect to eth
-	client, err := ethclient.Connect()
+	nodeUrl := ethclient.GetNodeWsUrl()
+	log.Printf("Connecting to Ethereum node: %s\n", nodeUrl)
+	client, err := ethclient.Connect(nodeUrl)
 	if err != nil {
 		log.Fatalf("Failed to connect to the Ethereum client: %v", err)
 	}

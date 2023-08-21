@@ -16,5 +16,6 @@ WORKDIR /root/
 
 # Copy the binary from the builder image
 COPY --from=builder /app/main .
+COPY --from=builder /app/config.json .
 
 CMD ["./main"]
