@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"holeksii.com/eth-go-test/db"
@@ -12,6 +13,7 @@ import (
 func main() {
 	// db initialization
 	db.InitDB()
+	db.WaitDB()
 	db.CreateTransactionsTable()
 	defer db.CloseDB()
 
@@ -38,15 +40,16 @@ func main() {
 			log.Fatalf("Subscription error: %v", err)
 		case txHash := <-ch:
 			tx, err := ethclient.GetTransaction(client, txHash)
+			timestamp := time.Now()
 			if err != nil {
 				log.Printf("Failed to fetch transaction details: %v", err)
 				continue
 			}
 
 			// Check if transaction is matching
-			matchingHash := "0xf305d719"
+			matchingHash := "0x"
 			if ethclient.IsMatchingTransaction(tx, matchingHash) {
-				db.InsertTransaction(txHash)
+				db.InsertTransaction(txHash, timestamp)
 				log.Printf("Saved matching transaction hash: %s\n", tx.Hash)
 			}
 		}
